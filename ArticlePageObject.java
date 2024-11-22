@@ -7,9 +7,10 @@ import org.openqa.selenium.WebElement;
 public class ArticlePageObject extends MainPageObject
 {
     private static final String
-        TITLE = "//*[contains(@text, 'Java (programming language)')]",
-        ELEMENT_PAGE_WEB_VIEW = "org.wikipedia:id/page_web_view",
-        ONBOARDING_ELEMENT = "org.wikipedia:id/fragment_onboarding_done_button";
+        TITLE = "xpath://*[contains(@text, 'Java (programming language)')]",
+        ELEMENT_PAGE_WEB_VIEW = "id:org.wikipedia:id/page_web_view",
+        ELEMENT_PAGE_SAVE = "id:org.wikipedia:id/page_save",
+        ONBOARDING_ELEMENT = "id:org.wikipedia:id/fragment_onboarding_done_button";
 
     public ArticlePageObject(AppiumDriver driver){
         super(driver);
@@ -17,7 +18,7 @@ public class ArticlePageObject extends MainPageObject
 
     public WebElement waitForTitleElement()
     {
-        return this.waitForElementPresent(By.xpath(TITLE), "Cannot find article title on page", 15);
+        return this.waitForElementPresent(TITLE, "Cannot find article title on page", 15);
     }
 
     public String getArticleTitle()
@@ -29,7 +30,7 @@ public class ArticlePageObject extends MainPageObject
     public void swipeToStartButton()
     {
         this.scrollToLeftFindElement(
-                By.id(ONBOARDING_ELEMENT),
+                ONBOARDING_ELEMENT,
                 "Cannot find onboarding button",
                 20
         );
@@ -42,13 +43,19 @@ public class ArticlePageObject extends MainPageObject
 
     public void assertThereIsResultOfSearch()
     {
-        this.assertElementPresent(By.xpath(TITLE), "We've not found some results by request");
+        this.assertElementPresent(TITLE, "We've not found some results by request");
 
     }
 
     public void waitElementPageWebView()
     {
-        this.waitForElementAndClick(By.id(ELEMENT_PAGE_WEB_VIEW), "We've not found some results by request", 5);
+        this.waitForElementAndClick(ELEMENT_PAGE_WEB_VIEW, "We've not found some results by request", 5);
+
+    }
+
+    public void waitElementPageSave()
+    {
+        this.waitForElementAndClick(ELEMENT_PAGE_SAVE, "We've not found save button", 5);
 
     }
 
