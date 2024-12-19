@@ -3,28 +3,28 @@ package lib.ui;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
 
-public class SearchPageObject extends MainPageObject
+abstract public class SearchPageObject extends MainPageObject
 {
 
-    private static final String
-        SEARCH_BUTTON_SKIP = "xpath://*[contains(@text, 'Skip')]",
-        SEARCH_INIT_ELEMENT = "xpath://*[contains(@text, 'Search Wikipedia')]",
-        SEARCH_INPUT = "xpath://*[contains(@text, 'Search Wikipedia')]",
-        SEARCH_CANCEL_BUTTON = "xpath://android.widget.ImageButton[@content-desc=\"Navigate up\"]",
-        SEARCH_CLOSE_BUTTON = "id:org.wikipedia:id/search_close_btn",
-        SEARCH_RESULT_ELEMENT = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title'][@text = 'Linkin Park discography']",
-        SEARCH_EMPTY_RESULT_ELEMENT = "xpath://*[@text='No results']",
-        SEARCH_LIST_ITEM_TITLE = "id:org.wikipedia:id/page_list_item_title",
-        SEARCH_TITLE_ONBOARDING_LIST1 = "xpath://*[@resource-id='org.wikipedia:id/primaryTextView'][contains(@text, 'The Free Encyclopedia\n…in over 300 languages')]",
-        SEARCH_TITLE_ONBOARDING_LIST2 = "xpath://*[@resource-id='org.wikipedia:id/primaryTextView'][@text = 'New ways to explore']",
-        SEARCH_TITLE_ONBOARDING_LIST3 = "xpath://*[@resource-id='org.wikipedia:id/primaryTextView'][@text = 'Reading lists with sync']",
-        SEARCH_TITLE_ONBOARDING_LIST4 = "xpath://*[@resource-id='org.wikipedia:id/primaryTextView'][@text = 'Data & Privacy']",
-        SEARCH_ONBOARDING_DONE_BUTTON = "id:org.wikipedia:id/fragment_onboarding_done_button",
-        SEARCH_MAIN_TOOLBAR_WORDMARK = "id:org.wikipedia:id/main_toolbar_wordmark",
-        SEARCH_NAVIGATION_BAR_SAVE_ICON = "xpath://*[@resource-id='org.wikipedia:id/navigation_bar_item_small_label_view'][@text = 'Saved']",
-        SEARCH_SAVED_OBJECT = "id:org.wikipedia:id/item_title",
-        TITLE = "xpath://*[contains(@text, 'Java (programming language)')]",
-        SEARCH_RESULT_BY_SUBSTRING_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_description'][@text = '{SUBSTRING}']";
+    protected static String
+        SEARCH_BUTTON_SKIP,
+        SEARCH_INIT_ELEMENT,
+        SEARCH_INPUT,
+        SEARCH_CANCEL_BUTTON,
+        SEARCH_CLOSE_BUTTON,
+        SEARCH_RESULT_ELEMENT,
+        SEARCH_EMPTY_RESULT_ELEMENT,
+        SEARCH_LIST_ITEM_TITLE,
+        SEARCH_TITLE_ONBOARDING_LIST1,
+        SEARCH_TITLE_ONBOARDING_LIST2,
+        SEARCH_TITLE_ONBOARDING_LIST3,
+        SEARCH_TITLE_ONBOARDING_LIST4,
+        SEARCH_ONBOARDING_DONE_BUTTON,
+        SEARCH_MAIN_TOOLBAR_WORDMARK,
+        SEARCH_NAVIGATION_BAR_SAVE_ICON,
+        SEARCH_SAVED_OBJECT,
+        TITLE,
+        SEARCH_RESULT_BY_SUBSTRING_TPL;
 
 
     public SearchPageObject(AppiumDriver driver)
@@ -40,12 +40,12 @@ public class SearchPageObject extends MainPageObject
 
     public void initSkipButton() {
         this.waitForElementPresent(SEARCH_BUTTON_SKIP, "Cannot find button 'Skip'");
-        this.waitForElementAndClick(SEARCH_BUTTON_SKIP, "Cannot find button 'Skip'", 5);
+        this.waitForElementAndClick(SEARCH_BUTTON_SKIP, "Cannot find button 'Skip'", 15);
     }
 
     public void initSearchInput() {
-        this.waitForElementPresent(SEARCH_INIT_ELEMENT, "Cannot find search input after clicking search init element");
-        this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "Cannot find and click search init element", 5);
+        this.waitForElementPresent(SEARCH_INIT_ELEMENT, "Cannot find search input after clicking search init element", 15);
+        this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "Cannot find and click search init element", 15);
     }
 
     public void typeSearchLine(String search_line) {
@@ -168,6 +168,34 @@ public class SearchPageObject extends MainPageObject
     public void swipeSaveObject()
     {
         this.swipeElementToLeft(TITLE, "Cannot find saved object");
+    }
+
+
+    public void swipeToSecondOnboardingList()
+    {
+        this.scrollToLeftFindElement(
+                SEARCH_TITLE_ONBOARDING_LIST2,
+                "Cannot find tittle on second page onboarding",
+                20
+        );
+    }
+
+    public void swipeToFourthOnboardingList()
+    {
+        this.scrollToLeftFindElement(
+                SEARCH_TITLE_ONBOARDING_LIST4,
+                "Cannot find tittle on fourth page onboarding",
+                20
+        );
+    }
+
+    public void swipeToThirdOnboardingList()
+    {
+        this.scrollToLeftFindElement(
+                SEARCH_TITLE_ONBOARDING_LIST3,
+                "Cannot find tittle on third page onboarding",
+                20
+        );
     }
 
 
