@@ -1,24 +1,23 @@
 package tests;
 
 import lib.CoreTestCase;
-import lib.ui.ArticlePageObject;
 import lib.ui.SearchPageObject;
+import lib.ui.factories.SearchPageObjectFactory;
 import org.junit.Test;
-import org.openqa.selenium.By;
+
 
 public class HomeWorkEx5Refactor extends CoreTestCase {
 
     @Test
     public void testSwipeElementAndCheckTitle()
     {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitForTitleOnboardingList1();
-        ArticlePageObject.swipeToNextPageOnboarding();
+        SearchPageObject.swipeToSecondOnboardingList();
         SearchPageObject.waitForTitleOnboardingList2();
-        ArticlePageObject.swipeToNextPageOnboarding();
+        SearchPageObject.swipeToThirdOnboardingList();
         SearchPageObject.waitForTitleOnboardingList3();
-        ArticlePageObject.swipeToNextPageOnboarding();
+        SearchPageObject.swipeToFourthOnboardingList();
         SearchPageObject.waitForTitleOnboardingList4();
         SearchPageObject.clickDoneButtonOnboarding();
         SearchPageObject.waitForMainToolbar();
