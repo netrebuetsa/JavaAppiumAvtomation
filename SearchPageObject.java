@@ -1,7 +1,9 @@
-package lib.ui;
+package src.lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import src.lib.Platform;
 
 abstract public class SearchPageObject extends MainPageObject
 {
@@ -12,6 +14,8 @@ abstract public class SearchPageObject extends MainPageObject
         SEARCH_INPUT,
         SEARCH_CANCEL_BUTTON,
         SEARCH_CLOSE_BUTTON,
+        SEARCH_CLOSE_BUTTON_2,
+        SEARCH_BACK_BUTTON,
         SEARCH_RESULT_ELEMENT,
         SEARCH_EMPTY_RESULT_ELEMENT,
         SEARCH_LIST_ITEM_TITLE,
@@ -24,10 +28,21 @@ abstract public class SearchPageObject extends MainPageObject
         SEARCH_NAVIGATION_BAR_SAVE_ICON,
         SEARCH_SAVED_OBJECT,
         TITLE,
+        OPEN_NAVIGATION,
+        REMOVE_FROM_SAVED_BUTTON,
+        ARTICLE_BY_TITLE_TPL,
         SEARCH_RESULT_BY_SUBSTRING_TPL;
 
 
-    public SearchPageObject(AppiumDriver driver)
+    public void openNavigation()
+    {
+        if (Platform.getInstance().isMW()) {
+            this.waitForElementAndClick(OPEN_NAVIGATION, "Cannot find and click open navigation button", 5);
+        } else {
+            System.out.println("Method openNavigation() does nothing for platform " + Platform.getInstance().getPlatformVar());
+        }
+    }
+    public SearchPageObject(RemoteWebDriver driver)
     {
         super(driver);
     }
@@ -36,6 +51,10 @@ abstract public class SearchPageObject extends MainPageObject
     private static String getResultSearchElement(String substring)
     {
         return SEARCH_RESULT_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
+    }
+
+    private static String getArticleTitleXPath(String article_title){
+        return ARTICLE_BY_TITLE_TPL.replace("{ARTICLE_TITLE}", article_title);
     }
 
     public void initSkipButton() {
@@ -116,8 +135,22 @@ abstract public class SearchPageObject extends MainPageObject
     }
 
     public void clickCancelSearch() {
+        if ((Platform.getInstance().isIOS() || Platform.getInstance().isAndroid())) {
 
-        this.waitForElementAndClick(SEARCH_CANCEL_BUTTON, "Cannot find and click search cancel button", 5);
+            this.waitForElementAndClick(SEARCH_CANCEL_BUTTON, "Cannot find and click search cancel button", 5);
+        } else {
+            System.out.println("Method clickCancelSearch() does nothing for platform " + Platform.getInstance().getPlatformVar());
+        }
+    }
+
+    public void clickBackButton() {
+
+        this.waitForElementAndClick(SEARCH_BACK_BUTTON, "Cannot find and click back button", 5);
+    }
+
+    public void clickCloseButton() {
+
+        this.waitForElementAndClick(SEARCH_CLOSE_BUTTON_2, "Cannot find and click close button", 5);
     }
 
     public void clickCloseSearch() {
@@ -157,7 +190,15 @@ abstract public class SearchPageObject extends MainPageObject
 
     public void waitNavigationBarSaveButton()
     {
-        this.waitForElementAndClick(SEARCH_NAVIGATION_BAR_SAVE_ICON, "Cannot find save button navigation bar", 5);
+        if (Platform.getInstance().isMW()) {
+            this.tryClickElementWithFewAttempts(
+                    SEARCH_NAVIGATION_BAR_SAVE_ICON,
+                    "Cannot find save button navigation bar",
+                    5
+            );
+        } else {
+            this.waitForElementAndClick(SEARCH_NAVIGATION_BAR_SAVE_ICON, "Cannot find save button navigation bar", 5);
+        }
     }
 
     public void waitSaveObject()
@@ -165,11 +206,46 @@ abstract public class SearchPageObject extends MainPageObject
         this.waitForElementAndClick(SEARCH_SAVED_OBJECT, "Cannot find saved object", 5);
     }
 
-    public void swipeSaveObject()
-    {
-        this.swipeElementToLeft(TITLE, "Cannot find saved object");
+    public void swipeSaveObject() {
+        if ((Platform.getInstance().isAndroid() || Platform.getInstance().isIOS())) {
+            this.swipeElementToLeft(TITLE, "Cannot find saved object");
+        } else {
+            String remove_locator = getRemoveButtonByTitle("article_title");
+            this.waitForElementAndClick(
+                    remove_locator,
+                    "Cannot click button to remove article fron saved",
+                    10
+            );
+        }
+        if (Platform.getInstance().isMW()) {
+            driver.navigate().refresh();
+        }
     }
 
+    public void swipeSaveArticleObject(String article_title) {
+        String article_title_xpath = getArticleTitleXPath(article_title);
+        this.waitForArticleToAppearByTitle(article_title);
+
+        if ((Platform.getInstance().isAndroid() || Platform.getInstance().isIOS())) {
+            this.swipeElementToLeft(article_title_xpath,
+                    "'" + article_title + "' article not found in the saved list");
+        } else {
+            String remove_locator = getRemoveButtonByTitle("article_title");
+            this.waitForElementAndClick(
+                    remove_locator,
+                    "Cannot click button to remove article fron saved",
+                    10
+            );
+        }
+        if (Platform.getInstance().isMW()) {
+            driver.navigate().refresh();
+        }
+    }
+
+    private static String getRemoveButtonByTitle(String article_title)
+    {
+        return REMOVE_FROM_SAVED_BUTTON.replace("{TITLE}", article_title);
+    }
 
     public void swipeToSecondOnboardingList()
     {
@@ -197,6 +273,24 @@ abstract public class SearchPageObject extends MainPageObject
                 20
         );
     }
+
+    public void waitForArticleToDisappearByTitle(String article_title){
+        String article_title_xpath = this.getArticleTitleXPath(article_title);
+        this.waitForElementNotPresent(article_title_xpath,
+                "'"+ article_title + "' still present in the saved list",
+                15);
+    }
+
+    public void waitForArticleToAppearByTitle(String article_title){
+        String article_title_xpath = getArticleTitleXPath(article_title);
+        this.waitForElementPresent(article_title_xpath,
+                "'"+ article_title + "' article was not found in the saved list",
+                15);
+    }
+
+
+
+
 
 
 }
